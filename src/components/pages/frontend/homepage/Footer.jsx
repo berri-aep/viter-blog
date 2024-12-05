@@ -15,14 +15,14 @@ const Footer = () => {
                 <li>Lisbon</li>
               </ul>
             </div>
-            <ul className="flex">
-              <li className="size-[30px] center-all rounded-full border border-light text-xs">
+            <ul className="flex gap-5">
+              <li className="size-[30px] center-all rounded-full border border-light text-xs hover:bg-black hover:text-white transition-all duration-300">
                 <a href="">TW</a>
               </li>
-              <li className="size-[30px] center-all rounded-full border border-light text-xs">
+              <li className="size-[30px] center-all rounded-full border border-light text-xs hover:bg-black hover:text-white transition-all duration-300">
                 <a href="">IN</a>
               </li>
-              <li className="size-[30px] center-all rounded-full border border-light text-xs">
+              <li className="size-[30px] center-all rounded-full border border-light text-xs hover:bg-black hover:text-white transition-all duration-300">
                 <a href="">BE</a>
               </li>
             </ul>

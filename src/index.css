@@ -37,7 +37,7 @@
     @apply h-full;
   }
   body{
-    @apply text-light font-['Roboto'] leading-tight overflow-x-hidden p-2;
+    @apply text-light font-['Roboto'] leading-tight overflow-x-hidden text-black;
   }
 
   h1,h2,h3,h4,h5{
@@ -243,6 +243,18 @@
   
   .btn-animate:hover::after{
     @apply bottom-2 transition-all duration-300;
+  }
+
+  .blog-content h2{
+    @apply font-[syne] text-4xl font-normal;
+  }
+
+  .blog-content h3{
+    @apply font-[syne]  text-2xl font-normal;
+  }
+
+  .blog-content p{
+    @apply leading-relaxed mb-5;
   }
 }
 

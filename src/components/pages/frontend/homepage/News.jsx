@@ -1,13 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 
-const LatestNews = () => {
+const News = ({title}) => {
   return (
     <section className="py-16 border-b border-light">
       <div className="container">
         <div className="flex justify-between items-center py-10 border-y border-light mb-10">
           <h2 className="uppercase font-[syne] font-normal text-7xl mb-0">
-            Latest News
+            {title}
           </h2>
           <Link to="/" className="btn-animate uppercase" data-text="see all">
             See All
@@ -59,4 +59,4 @@ const LatestNews = () => {
   );
 }
 
-export default LatestNews
+export default News
