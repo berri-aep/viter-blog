@@ -24,7 +24,7 @@ const ModalDelete = () => {
           </div>
           <div className="modal-body p-2 py-4">
             <p className="mb-0 text-center">
-              Are you sure you want to remove this movie?
+              Are you sure you want to remove this content?
             </p>
 
             <div className="flex justify-end gap-3 mt-5">

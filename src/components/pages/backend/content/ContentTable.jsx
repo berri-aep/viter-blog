@@ -29,9 +29,9 @@ const ContentTable = ({ setItemEdit }) => {
     error,
     data: result,
   } = useQueryData(
-    `/v2/recipe`, // endpoint
+    `/v2/blog`, // endpoint
     "get", // method
-    "recipe"
+    "blog"
   );
   let counter = 1;
 
@@ -42,18 +42,18 @@ const ContentTable = ({ setItemEdit }) => {
 
   const handleDelete = (item) => {
     dispatch(setIsDelete(true));
-    setId(item.recipe_aid);
+    setId(item.blog_aid);
   };
   const handleRestore = (item) => {
     dispatch(setIsConfirm(true));
     setIsActive(1);
-    setId(item.recipe_aid);
+    setId(item.blog_aid);
   };
 
   const handleArchive = (item) => {
     dispatch(setIsConfirm(true));
     setIsActive(0);
-    setId(item.recipe_aid);
+    setId(item.blog_aid);
   };
   return (
     <>
@@ -96,14 +96,13 @@ const ContentTable = ({ setItemEdit }) => {
                   <tr key={key}>
                     <td>{counter++}.</td>
                     <td>
-                      <Pills isActive={item.recipe_is_active} />
+                      <Pills isActive={item.blog_is_active} />
                     </td>
-                    <td>{item.recipe_title}</td>
-                    <td className="capitalize">{item.recipe_category}</td>
-                    <td className="capitalize">{item.recipe_level}</td>
+                    <td>{item.blog_title}</td>
+                    <td className="capitalize">{item.blog_category}</td>
                     <td>
                       <ul className="table-action">
-                        {item.recipe_is_active ? (
+                        {item.blog_is_active ? (
                           <>
                             <li>
                               <button
@@ -158,10 +157,23 @@ const ContentTable = ({ setItemEdit }) => {
           <LoadMore />
         </div>
       </div>
-
-      {store.isDelete && <ModalDelete />}
-      {store.isRestore && <ModalConfirm />}
-      {store.isArchive && <ModalConfirm />}
+      {store.isDelete && (
+        <ModalDelete queryKey="blog" mysqlApiDelete={`/v2/blog/${id}`} />
+      )}
+      {store.isConfirm && (
+        <ModalConfirm
+          queryKey="blog"
+          mysqlApiArchive={`/v2/blog/active/${id}`}
+          active={isActive}
+        />
+      )}
+      {store.isArchive && (
+        <ModalConfirm
+          queryKey="blog"
+          mysqlApiArchive={`/v2/blog/active/${id}`}
+          active={isActive}
+        />
+      )}
     </>
   );
 };

@@ -31,13 +31,16 @@ const Content = () => {
                   <Plus size={16} /> Add New
                 </button>
               </div>
-              <ContentTable />
+              <ContentTable setItemEdit={setItemEdit} />
             </div>
 
             <Footer />
           </main>
         </div>
       </section>
+      {store.validate && <ModalValidation />}
+      {store.error && <ModalError />}
+      {store.success && <ToastSuccess />}
       {store.isAdd && <ModalAddContent itemEdit={itemEdit} />}
     </>
   );

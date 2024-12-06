@@ -10,13 +10,40 @@ import { InputPhotoUpload, InputText } from "@/components/helpers/FormInputs";
 import useUploadPhoto from "@/components/custom-hook/useUploadPhoto";
 import { InputSelect } from "@/components/helpers/FormInputs";
 import { InputTextArea } from "@/components/helpers/FormInputs";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const ModalAddContent = ({itemEdit}) => {
+const ModalAddContent = ({ itemEdit }) => {
   const { dispatch } = React.useContext(StoreContext);
   const handleClose = () => dispatch(setIsAdd(false));
 
   const { uploadPhoto, handleChangePhoto, photo } =
     useUploadPhoto("/v2/upload-photo");
+
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (values) =>
+      queryData(
+        itemEdit ? `/v2/blog/${itemEdit.blog_aid}` : `/v2/blog`,
+        itemEdit ? "put" : "post",
+        values
+      ),
+    onSuccess: (data) => {
+      // Invalidate and refetch
+      console.log(data);
+      queryClient.invalidateQueries({
+        queryKey: ["blog"],
+      });
+
+      // show error box
+      if (data.success) {
+        dispatch(setIsAdd(false));
+        dispatch(setSuccess(true));
+      } else {
+        dispatch(setValidate(true));
+        dispatch(setMessage(data.error));
+      }
+    },
+  });
 
   const initVal = {
     blog_title: "",
@@ -24,20 +51,21 @@ const ModalAddContent = ({itemEdit}) => {
     blog_category: "",
     blog_author: "",
     blog_reading_time: "",
-    blog_prep_time: "",
+    blog_content: "",
+    blog_published_date: "",
     blog_description: "",
-    blog_instruction: "",
 
     blog_title_old: "",
   };
   const yupSchema = Yup.object({
-    blog_title: Yup.string().required("required"),
-    blog_excerpt: Yup.string().required("required"),
-    blog_category: Yup.string().required("required"),
-    blog_author: Yup.string().required("required"),
-    blog_reading_time: Yup.string().required("required"),
-    blog_description: Yup.string().required("required"),
-    blog_instruction: Yup.string().required("required"),
+    // blog_title: Yup.string().required("required"),
+    // blog_excerpt: Yup.string().required("required"),
+    // blog_category: Yup.string().required("required"),
+    // blog_author: Yup.string().required("required"),
+    // blog_reading_time: Yup.string().required("required"),
+    // blog_content: Yup.string().required("required"),
+    // blog_published_date: Yup.string().required("required"),
+    // blog_description: Yup.string().required("required"),
   });
   return (
     <>
@@ -53,14 +81,20 @@ const ModalAddContent = ({itemEdit}) => {
             <Formik
               initialValues={initVal}
               validationSchema={yupSchema}
-              name="photo"
-              type="file"
-              id="photo"
-              accept="image/*"
-              title="Upload photo"
-              onChange={(e) => handleChangePhoto(e)}
-              onDrop={(e) => handleChangePhoto(e)}
-              className={`opacity-0 absolute top-0 right-0 bottom-0 left-0 rounded-full  m-auto cursor-pointer w-full h-full`}
+              onSubmit={async (values) => {
+                console.log(values)
+                mutation.mutate({
+                  ...values,
+                  blog_image:
+                    (itemEdit?.blog_image === "" && photo) ||
+                    (!photo && "") ||
+                    (photo === undefined && "") ||
+                    (photo && itemEdit?.blog_image !== photo?.name)
+                      ? photo?.name || ""
+                      : itemEdit?.blog_image || "",
+                });
+                uploadPhoto();
+              }}
             >
               {(props) => {
                 return (
@@ -85,10 +119,14 @@ const ModalAddContent = ({itemEdit}) => {
                               src={
                                 photo
                                   ? URL.createObjectURL(photo) // preview
-                                  : imgPath + "/" + itemEdit?.recipe_image // check db
+                                  : imgPath + "/" + itemEdit?.blog_image // check db
                               }
-                              alt="recipe photo"
-                              className={`group-hover:opacity-30 duration-200 relative object-cover h-full w-full  m-auto`}
+                              alt="blog photo"
+                              className={`group-hover:opacity-30 duration-200 relative object-cover h-full w-full  m-auto ${
+                                mutation.isPending
+                                  ? "opacity-40 pointer-events-none"
+                                  : ""
+                              }`}
                             />
                           )}
 
@@ -100,14 +138,16 @@ const ModalAddContent = ({itemEdit}) => {
                             title="Upload photo"
                             onChange={(e) => handleChangePhoto(e)}
                             onDrop={(e) => handleChangePhoto(e)}
-                            className={`opacity-0 absolute top-0 right-0 bottom-0 left-0 rounded-full  m-auto cursor-pointer w-full h-full`}
+                            className={`opacity-0 absolute top-0 right-0 bottom-0 left-0 rounded-full  m-auto cursor-pointer w-full h-full ${
+                              mutation.isPending ? "pointer-events-none" : ""
+                            }`}
                           />
                         </div>
 
                         <div className="input-wrap">
                           <InputText
                             label="Title"
-                            name="content_title"
+                            name="blog_title"
                             type="text"
                           />
                         </div>
@@ -116,6 +156,13 @@ const ModalAddContent = ({itemEdit}) => {
                             label="Excerpt"
                             name="blog_excerpt"
                             type="text"
+                          />
+                        </div>
+                        <div className="input-wrap">
+                          <InputText
+                            label="Date"
+                            name="blog_published_date"
+                            type="date"
                           />
                         </div>
                         <div className="input-wrap">
@@ -152,11 +199,11 @@ const ModalAddContent = ({itemEdit}) => {
                         </div>
                       </div>
 
-                      <div className="instruction">
+                      <div className="content">
                         <div className="input-wrap">
                           <h3>Content</h3>
                           <InputTextArea
-                            name="blog_instruction"
+                            name="blog_content"
                             className="overflow-y-auto custom-scroll !h-[494px] w-full rounded-md p-2 outline-none bg-primary border borderline resize-none text-body"
                           />
                         </div>
@@ -165,7 +212,7 @@ const ModalAddContent = ({itemEdit}) => {
 
                     <div className="flex justify-end gap-3 mt-5">
                       <button className="btn btn-accent" type="submit">
-                        {/* {mutation.isPending && <SpinnerButton />}{" "} */}
+                        {mutation.isPending && <SpinnerButton />}
                         {itemEdit ? "Save" : "Add"}
                       </button>
                       <button
