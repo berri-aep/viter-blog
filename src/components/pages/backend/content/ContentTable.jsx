@@ -163,14 +163,14 @@ const ContentTable = ({ setItemEdit }) => {
       {store.isConfirm && (
         <ModalConfirm
           queryKey="blog"
-          mysqlApiArchive={`/v2/blog/active/${id}`}
+          mysqlEndpoint={`/v2/blog/active/${id}`}
           active={isActive}
         />
       )}
       {store.isArchive && (
         <ModalConfirm
           queryKey="blog"
-          mysqlApiArchive={`/v2/blog/active/${id}`}
+          mysqlEndpoint={`/v2/blog/active/${id}`}
           active={isActive}
         />
       )}

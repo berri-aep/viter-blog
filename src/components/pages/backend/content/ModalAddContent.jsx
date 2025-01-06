@@ -11,6 +11,7 @@ import useUploadPhoto from "@/components/custom-hook/useUploadPhoto";
 import { InputSelect } from "@/components/helpers/FormInputs";
 import { InputTextArea } from "@/components/helpers/FormInputs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { imgPath } from "@/components/helpers/functions-general";
 
 const ModalAddContent = ({ itemEdit }) => {
   const { dispatch } = React.useContext(StoreContext);
@@ -58,14 +59,14 @@ const ModalAddContent = ({ itemEdit }) => {
     blog_title_old: "",
   };
   const yupSchema = Yup.object({
-    // blog_title: Yup.string().required("required"),
-    // blog_excerpt: Yup.string().required("required"),
-    // blog_category: Yup.string().required("required"),
-    // blog_author: Yup.string().required("required"),
-    // blog_reading_time: Yup.string().required("required"),
-    // blog_content: Yup.string().required("required"),
-    // blog_published_date: Yup.string().required("required"),
-    // blog_description: Yup.string().required("required"),
+    blog_title: Yup.string().required("required"),
+    blog_excerpt: Yup.string().required("required"),
+    blog_category: Yup.string().required("required"),
+    blog_author: Yup.string().required("required"),
+    blog_reading_time: Yup.string().required("required"),
+    blog_content: Yup.string().required("required"),
+    blog_published_date: Yup.string().required("required"),
+    blog_description: Yup.string().required("required"),
   });
   return (
     <>
